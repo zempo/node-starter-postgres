@@ -43,8 +43,11 @@ app.use('/api/auth', authRouter)
 app.use('/api/users', usersRouter)
 
 app.get('/', (req, res) => {
+
+    let statusPg = ``
+
     // load app status pg w/ variable checks
-    res.status(200).json('Welcome to your app')
+    res.status(200).send(statusPg)
 })
 
 module.exports = app
