@@ -1,13 +1,13 @@
-const express = require('express')
-const path = require('path')
-const { requireAuth } = require('../middleware/jwtAuthMW')
+const express = require("express");
+const path = require("path");
+const { requireAuth } = require("../middleware/jwtAuthMW");
 
 /**
  * SETUP
- * */ 
-const UsersService = require('../services/usersService')
-const usersRouter = express.Router()
-const jsonBodyParser = express.json()
+ * */
+const UsersService = require("../services/usersService");
+const usersRouter = express.Router();
+const jsonBodyParser = express.json();
 
 usersRouter
   .route("/")
@@ -16,13 +16,14 @@ usersRouter
     // maybe client-side administration?
     if (req.user.admin) {
       return res.json({
-          success: true,
-          message: "Here are the current users and their stats",
-          data:UsersService.serializeUsers(res.users)});
+        success: true,
+        message: "Here are the current users and their stats",
+        data: UsersService.serializeUsers(res.users),
+      });
     } else {
       return res.status(403).json({
-          success: false,
-          message: "You don't have permission to view this resource."
+        success: false,
+        message: "You don't have permission to view this resource.",
       });
     }
   })
@@ -54,22 +55,21 @@ usersRouter
           user.user_name
         );
         if (userNameExists)
-          return res.status(400).json({ 
-              status: false,  
-              message: "This username already exists. Please choose another."
-            });
+          return res.status(400).json({
+            status: false,
+            message: "This username already exists. Please choose another.",
+          });
 
         let emailExists = await service.uniqueEmail(
           req.app.get("db"),
           user.email
         );
         if (emailExists)
-          return res
-            .status(400)
-            .json({
-                success: false,
-                message: "An account associated with this email has already been created."
-            });
+          return res.status(400).json({
+            success: false,
+            message:
+              "An account associated with this email has already been created.",
+          });
 
         // then we hash password
         let hashpwd = await service.hashPassword(user.password);
@@ -77,23 +77,21 @@ usersRouter
         // then we insert the new user
         let insertedUser = await service.insertUser(req.app.get("db"), user);
         if (!insertedUser)
-          return res
-            .status(500)
-            .json({ 
-                success: false,
-                message: "Sorry, our servers appear to be down :/" 
-            });
+          return res.status(500).json({
+            success: false,
+            message: "Sorry, our servers appear to be down :/",
+          });
 
         return res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${insertedUser.id}`))
-          .json({ 
-              success: true,
-              message: "New user created.",
-              data: service.serializeUser(insertedUser)
-            });
+          .json({
+            success: true,
+            message: "New user created.",
+            data: service.serializeUser(insertedUser),
+          });
       } catch (error) {
-        next(error); 
+        next(error);
       }
     }
 
@@ -117,26 +115,28 @@ usersRouter
       return res.status(200).json({
         success: true,
         message: `Found user with id of ${req.user.id}.`,
-        data: UsersService.serializeUser(res.user)
-        });
+        data: UsersService.serializeUser(res.user),
+      });
     } else {
       return res.status(403).json({
-          success: false,
-          message: "This user cannot be found. It may have been modified or deleted."
+        success: false,
+        message:
+          "This user cannot be found. It may have been modified or deleted.",
       });
     }
   })
   .delete((req, res, next) => {
     if (req.user.id === res.user.id || req.user.admin) {
       UsersService.deleteUser(req.app.get("db"), res.user.id)
-        .then(rowsAffected => {
+        .then((rowsAffected) => {
           return res.status(204).json();
         })
         .catch(next);
     } else {
       return res.status(403).json({
         success: false,
-        message: "This user cannot be found. It may have been modified or deleted."
+        message:
+          "This user cannot be found. It may have been modified or deleted.",
       });
     }
   });
@@ -146,7 +146,7 @@ async function checkUsersExist(req, res, next) {
     const users = await UsersService.getUsers(req.app.get("db"));
 
     if (!users || users.length === 0) {
-      return res.status(404).json({ error: {message: "No users found"} });
+      return res.status(404).json({ error: { message: "No users found" } });
     }
 
     res.users = users;
@@ -165,9 +165,9 @@ async function checkUserExists(req, res, next) {
 
     if (!user) {
       return res.status(404).json({
-          success: false,
-          message: "This user no longer exists" 
-        });
+        success: false,
+        message: "This user no longer exists",
+      });
     }
 
     res.user = user;

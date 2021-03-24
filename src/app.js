@@ -60,7 +60,7 @@ app.get("/", (req, res) => {
           padding: 10rem 5rem;
         }
   
-        h1 {
+        h1 { 
           text-align: center;
           color: #8f6d19;
           font-family: "Raleway", sans-serif;

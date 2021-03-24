@@ -6,25 +6,25 @@ Personal project starter
 
 Complete the following steps to begin a new project
 
-1. First, clone to your machine 
+1. First, clone to your machine
 
-	`git clone https://github.com/zempo/node-starter-postgres.git proj_name`
+   `git clone https://github.com/zempo/node-starter-postgres.git proj_name`
 
 2. Go to the project directory
-	
-	 `cd proj_name`
+
+   `cd proj_name`
 
 3. Reset project .git history with this command
 
-	`rm -rf .git && git init`
+   `rm -rf .git && git init`
 
-4. Install project dependencies 
+4. Install project dependencies
 
-	`npm i`
+   `npm i`
 
-5. Rename the example .env file, if you plan on using it
+5. Rename the example .env file, if you plan on using environmental variables in your project
 
-	`mv example.env .env`
+   `mv example.env .env`
 
 6. Update the package.json with your project name and details
 
@@ -40,7 +40,7 @@ const knex = require("knex");
 
 const knexInstance = knex({
   client: "pg",
-  connection: process.env.DB_URL
+  connection: process.env.DB_URL,
 });
 
 console.log("connection successful");
@@ -56,4 +56,4 @@ Run the tests `npm test`
 
 ## Deploying
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch. 
+When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
