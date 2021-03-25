@@ -8,25 +8,24 @@ Complete the following steps to begin a new project
 
 1. First, clone to your machine
 
-   `git clone https://github.com/zempo/node-starter-postgres.git proj_name`
+```bash
+# 1. First, clone to your machine
+git clone https://github.com/zempo/node-starter-postgres.git proj_name
 
-2. Go to the project directory
+# 2. Go to the project directory
+cd proj_name
 
-   `cd proj_name`
+# 3. Reset project .git history with this command
+rm -rf .git && git init
 
-3. Reset project .git history with this command
+# 4. Install project dependencies
+npm i
 
-   `rm -rf .git && git init`
+# 5. Rename the example .env file, if you plan on using environmental variables in your project
+mv example.env .env
 
-4. Install project dependencies
-
-   `npm i`
-
-5. Rename the example .env file, if you plan on using environmental variables in your project
-
-   `mv example.env .env`
-
-6. Update the package.json with your project name and details
+# 6. Update the package.json with your project name and details
+```
 
 ## Database (Sql)
 
