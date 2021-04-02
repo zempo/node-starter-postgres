@@ -27,6 +27,37 @@ mv example.env .env
 
 ## Database (Sql)
 
+1. Add migrations then create project database
+
+```bash
+
+createdb -U postgres new_db
+
+```
+
+2. Run migrations 1 by 1 (or all at once)
+
+```bash
+# migrate up
+npm run migrate -- 1
+# migrate down
+npm run migrate -- 0
+
+# migrate up, full
+npm run migrate
+
+```
+
+3. Seed database
+
+```bash
+
+psql -U postgres -d new_db -f ./seeds/seed.db_tables.sql
+
+```
+
+## Integrate Knex
+
 1. Run `npm i knex` and then `npm i pg` (for postgres, in this case).
 2. Reference the [Knex Documentation](https://knexjs.org/) for more.
 3. A sample db url has been added to the example env
