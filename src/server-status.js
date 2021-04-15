@@ -67,12 +67,6 @@ const statusPg = `<!DOCTYPE html>
         <li>
           <a href="http://localhost:${PORT}">Home</a>
         </li>
-        <li>
-          <a href="http://localhost:${PORT}/api/gallery">Gallery</a>
-        </li>
-        <li>
-          <a href="http://localhost:${PORT}/api/actions">Actions</a>
-        </li>
       </ul>
     </main>
   </body>

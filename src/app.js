@@ -11,7 +11,7 @@ const winston = require("winston");
  */
 const { NODE_ENV } = require("./config");
 const logger = require("./middleware/logMW").logger;
-const statusPg = require("./server-status");
+const statusPg = require("./server-status").statusPg;
 const errCatch = require("./middleware/errMW");
 
 // Route imports
