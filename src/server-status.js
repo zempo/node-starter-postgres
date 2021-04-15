@@ -1,4 +1,4 @@
-import { PORT, WORKING } from "./config";
+const { PORT, WORKING } = require("./config");
 
 const statusPg = `<!DOCTYPE html>
 <html lang="en">
