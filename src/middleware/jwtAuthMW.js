@@ -1,34 +1,28 @@
-const AuthService = require("../services/authService");
+const authService = require("../services/authService");
 
-const requireAuth = (res, req, next) => {
+const requireAuth = (req, res, next) => {
   const authToken = req.get("Authorization") || "";
 
   let bearerToken;
   if (!authToken.toLowerCase().startsWith("bearer ")) {
-    return res
-      .status(401)
-      .json({
-        error: {
-          message: "Unauthorized Request. Please provide bearer token.",
-        },
-      });
+    return res.status(401).json({
+      success: false,
+      message: `Unauthorized Request. Please provide proper credentials.`,
+    });
   } else {
     bearerToken = authToken.slice(7);
   }
   try {
-    const payload = AuthService.verifyJwt(bearerToken);
+    const payload = authService.verifyJwt(bearerToken);
 
-    AuthService.getUserByEmail(req.app.get("db"), payload.sub)
+    authService
+      .getUserByEmail(req.app.get("db"), payload.sub)
       .then((user) => {
         if (!user) {
-          return res
-            .status(401)
-            .json({
-              error: {
-                message:
-                  "Unauthorized Request. Please provide proper credentials",
-              },
-            });
+          return res.status(401).json({
+            success: false,
+            message: "Unauthorized Request. Please provide proper credentials.",
+          });
         }
         req.user = user;
         next();
@@ -38,13 +32,10 @@ const requireAuth = (res, req, next) => {
         next(err);
       });
   } catch (error) {
-    return res
-      .status(401)
-      .json({
-        error: {
-          message: "Unauthorized Request. Please provide proper credentials.",
-        },
-      });
+    return res.status(401).json({
+      success: false,
+      message: `Unauthorized Request. Please provide proper credentials.`,
+    });
   }
 };
 

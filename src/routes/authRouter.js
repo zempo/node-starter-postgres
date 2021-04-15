@@ -1,54 +1,77 @@
 const express = require("express");
-const AuthService = require("../services/authService");
+const authService = require("../services/authService");
 const { requireAuth } = require("../middleware/jwtAuthMW");
-
+// Set-up
 const authRouter = express.Router();
-const jsonBodyParser = express.json();
+const bodyParser = express.json();
 
-authRouter.post("/login", jsonBodyParser, (req, res, next) => {
+/**
+ * @desc POST valid user creds to get token
+ * @route /api/login
+ * @access Public
+ */
+authRouter.post("/login", bodyParser, (req, res, next) => {
   const { email, password } = req.body;
-  const loginUser = { email, password };
+  const userCreds = { email, password };
 
-  for (const [key, value] of Object.entries(loginUser)) {
+  for (const [key, value] of Object.entries(userCreds)) {
     if (value == undefined || value == null) {
       return res.status(400).json({
-        error: `Missing '${key}' in request body`,
+        success: false,
+        message: `Please provide a '${key}' in request body.`,
       });
     }
   }
 
-  AuthService.getUserWithEmail(req.app.get("db"), loginUser.email).then(
-    (dbUser) => {
+  authService
+    .getUserByEmail(req.app.get("db"), userCreds.email)
+    .then((dbUser) => {
       if (!dbUser) {
-        return res.status(400).json({
-          error: "Incorrect email or password",
+        return res.status(401).json({
+          success: false,
+          message: `Incorrect email or password, please try again.`,
         });
+      } else {
+        return authService
+          .comparePwds(userCreds.password, dbUser.password)
+          .then((matching) => {
+            if (matching) {
+              const sub = dbUser.email;
+              const payload = { user_id: dbUser.id };
+
+              return res.status(201).json({
+                success: true,
+                message: `Created new token.`,
+                token: authService.createJwt(sub, payload),
+              });
+            } else {
+              return res.status(401).json({
+                success: false,
+                message: `Incorrect email or password, please try again.`,
+              });
+            }
+          })
+          .catch(next);
       }
-      return AuthService.comparePasswords(loginUser.password, dbUser.password)
-        .then((matching) => {
-          if (!matching) {
-            return res.status(400).json({
-              error: "Incorrect email or password",
-            });
-          }
-          const sub = dbUser.email;
-          const payload = { user_id: dbUser.id };
-          res.send({
-            authToken: AuthService.createJwt(sub, payload),
-          });
-        })
-        .catch(next);
-    }
-  );
+    });
 });
 
+/**
+ * @desc POST valid user creds to refresh token
+ * @route /api/v1/refresh
+ * @access Private
+ */
 authRouter
   .route("/refresh")
   .all(requireAuth)
   .post((req, res, next) => {
     const sub = req.user.email;
     const payload = { user_id: req.user.id };
-    res.send({ authToken: AuthService.createJwt(sub, payload) });
+    res.status(201).json({
+      success: true,
+      message: `Created token refresh.`,
+      token: authService.createJwt(sub, payload),
+    });
   });
 
 module.exports = authRouter;

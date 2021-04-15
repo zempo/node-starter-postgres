@@ -8,11 +8,10 @@ const bearer = (req, res, next) => {
   const apiToken = process.env.API_KEY;
 
   if (!authToken || authToken.split(" ")[1] !== apiToken) {
-    return res
-      .status(401)
-      .json({
-        error: "Unauthorized request. Please provide proper credentials.",
-      });
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized request. Please provide proper credentials.",
+    });
   }
 
   next();

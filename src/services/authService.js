@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, JWT_EXPIRY } = require("../config");
 
-const AuthService = {
+const authService = {
   getUserByEmail(db, email) {
     return db("db_users").where({ email }).first();
   },
@@ -13,9 +13,9 @@ const AuthService = {
     return bcrypt.compare(password, hash);
   },
   createJwt(subject, payload) {
-    return jwt.sign(payload, {
+    return jwt.sign(payload, JWT_SECRET, {
       subject,
-      expiresIn: JWT_EXPIRY,
+      expiresIn: `${JWT_EXPIRY}`,
       algorithm: "HS256",
     });
   },
@@ -26,4 +26,4 @@ const AuthService = {
   },
 };
 
-module.exports = AuthService;
+module.exports = authService;

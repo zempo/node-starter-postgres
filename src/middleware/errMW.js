@@ -5,9 +5,9 @@ const errCatch = (err, req, res, next) => {
   let response;
 
   if (NODE_ENV === "production") {
-    response = { err: { msg: "Server Error" } };
+    response = { success: false, message: "Server Error", payload: err };
   } else {
-    response = { err };
+    response = { success: false, message: "Server Error", payload: err };
   }
   return res.status(500).json(response);
 };

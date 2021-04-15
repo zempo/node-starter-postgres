@@ -6,7 +6,7 @@ const validator = require("email-validator");
 const { REGEX } = require("../config");
 const { VALID_USERNAME, VALID_PWD } = REGEX;
 
-const UsersService = {
+const usersService = {
   getUsers(db) {
     return db.select("*").from("db_users");
   },
@@ -120,4 +120,4 @@ const UsersService = {
   },
 };
 
-module.exports = UsersService;
+module.exports = usersService;
